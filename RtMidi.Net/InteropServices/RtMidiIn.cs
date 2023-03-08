@@ -16,6 +16,7 @@ namespace RtMidi.Net.InteropServices;
 /// </summary>
 internal class RtMidiIn : RtMidiBase
 {
+    RtMidiCallback? _midiCallback;
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -67,7 +68,8 @@ internal class RtMidiIn : RtMidiBase
     /// passed to the callback function whenever it is called.</param>
     public void SetCallback(RtMidiCallback callback, byte[]? userData)
     {
-        RtMidiInterop.rtmidi_in_set_callback(RtMidiPtr, callback, userData);
+        _midiCallback = callback;
+        RtMidiInterop.rtmidi_in_set_callback(RtMidiPtr, _midiCallback, userData);
     }
 
     /// <summary>
@@ -126,6 +128,7 @@ internal class RtMidiIn : RtMidiBase
     /// <inheritdoc />
     protected override void ReleaseUnmanagedResources()
     {
+        _midiCallback = null;
         RtMidiInterop.rtmidi_in_free(RtMidiPtr);
     }
 }
